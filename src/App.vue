@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <h1>Lista de Usuarios</h1>
+    <h1>Gestión de Usuarios</h1>
 
     <!-- Formulario -->
     <form class="formulario" @submit.prevent="agregarUsuario">
