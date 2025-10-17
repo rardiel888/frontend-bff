@@ -1,11 +1,22 @@
 <template>
   <div id="app" class="container">
-    <h1>Lista de Usuarios</h1>
+    <h1>Gestión de Usuarios</h1>
 
     <!-- Formulario -->
     <form class="formulario" @submit.prevent="agregarUsuario">
-      <input v-model="nombre" placeholder="Nombre" data-test="input-nombre" />
-      <input v-model="email" type="email" placeholder="Correo electrónico" data-test="input-email" />
+      <input
+        v-model="nombre"
+        placeholder="Nombre"
+        data-test="input-nombre"
+        required
+      />
+      <input
+        v-model="email"
+        type="email"
+        placeholder="Correo electrónico"
+        data-test="input-email"
+        required
+      />
       <button type="submit">Agregar usuario</button>
     </form>
 
@@ -20,23 +31,48 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 // Datos reactivos
 const usuarios = ref([])
 const nombre = ref('')
 const email = ref('')
 
-// Agregar usuario (solo local para tests)
-const agregarUsuario = () => {
-  if (nombre.value && email.value) {
-    usuarios.value.push({
-      id: usuarios.value.length + 1,
-      nombre: nombre.value,
-      email: email.value
+// URL del backend en Render
+const apiUrl = 'https://backend-bff-1.onrender.com/api/usuarios'
+
+// Cargar usuarios desde backend al iniciar
+const cargarUsuarios = async () => {
+  try {
+    const res = await fetch(apiUrl)
+    if (!res.ok) throw new Error('Error cargando usuarios')
+    usuarios.value = await res.json()
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+onMounted(cargarUsuarios)
+
+// Agregar usuario al backend y actualizar lista
+const agregarUsuario = async () => {
+  if (!nombre.value || !email.value) return
+
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre: nombre.value, email: email.value })
     })
-    nombre.value = ''
+
+    if (!res.ok) throw new Error('Error agregando usuario')
+
+    const nuevo = await res.json()
+    usuarios.value.push(nuevo) // Actualiza la lista en frontend
+    nombre.value = '' // Limpiar inputs
     email.value = ''
+  } catch (err) {
+    console.error(err)
   }
 }
 </script>
