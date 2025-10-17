@@ -63,6 +63,7 @@ const agregarUsuario = async () => {
   }
 }
 </script>
+<<<<<<< HEAD
 
 <style>
 /* Contenedor general centrado */
@@ -146,3 +147,5 @@ h1 {
 }
 </style>
 
+=======
+>>>>>>> 11124be (Resuelto conflicto y agregado formulario de usuarios)
