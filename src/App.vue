@@ -4,8 +4,8 @@
 
     <!-- Formulario -->
     <form class="formulario" @submit.prevent="agregarUsuario">
-      <input v-model="nombre" placeholder="Nombre completo" required />
-      <input v-model="email" type="email" placeholder="Correo electrónico" required />
+      <input v-model="nombre" placeholder="Nombre" data-test="input-nombre" />
+      <input v-model="email" type="email" placeholder="Correo electrónico" data-test="input-email" />
       <button type="submit">Agregar usuario</button>
     </form>
 
@@ -20,42 +20,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 // Datos reactivos
 const usuarios = ref([])
 const nombre = ref('')
 const email = ref('')
 
-// URL de tu backend en Render
-const apiUrl = 'https://backend-bff-1.onrender.com'
-
-// Cargar usuarios al iniciar
-const cargarUsuarios = async () => {
-  try {
-    const res = await fetch(`${apiUrl}/api/usuarios`)
-    usuarios.value = await res.json()
-  } catch (err) {
-    console.error('Error cargando usuarios:', err)
-  }
-}
-
-onMounted(cargarUsuarios)
-
-// Agregar usuario
-const agregarUsuario = async () => {
-  try {
-    const res = await fetch(`${apiUrl}/api/usuarios`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre: nombre.value, email: email.value })
+// Agregar usuario (solo local para tests)
+const agregarUsuario = () => {
+  if (nombre.value && email.value) {
+    usuarios.value.push({
+      id: usuarios.value.length + 1,
+      nombre: nombre.value,
+      email: email.value
     })
-    const nuevo = await res.json()
-    usuarios.value.push(nuevo)
     nombre.value = ''
     email.value = ''
-  } catch (err) {
-    console.error('Error agregando usuario:', err)
   }
 }
 </script>
