@@ -1,18 +1,18 @@
 <template>
-  <div class="container">
+  <div id="app" class="container">
     <h1>Lista de Usuarios</h1>
 
     <!-- Formulario -->
     <form class="formulario" @submit.prevent="agregarUsuario">
-      <input v-model="nombre" placeholder="Nombre" required />
-      <input v-model="email" placeholder="Email" type="email" required />
-      <button type="submit">Agregar</button>
+      <input v-model="nombre" placeholder="Nombre completo" required />
+      <input v-model="email" type="email" placeholder="Correo electrónico" required />
+      <button type="submit">Agregar usuario</button>
     </form>
 
     <!-- Lista de usuarios -->
-    <ul class="usuarios-lista">
+    <ul class="lista-usuarios">
       <li v-for="usuario in usuarios" :key="usuario.id">
-        <span class="nombre">{{ usuario.nombre }}</span>
+        <span>{{ usuario.nombre }}</span>
         <span class="email">{{ usuario.email }}</span>
       </li>
     </ul>
@@ -22,31 +22,27 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
-// Lista de usuarios
+// Datos reactivos
 const usuarios = ref([])
-
-// Campos del formulario
 const nombre = ref('')
 const email = ref('')
 
-// URL del backend en Render
+// URL de tu backend en Render
 const apiUrl = 'https://backend-bff-1.onrender.com'
 
-// Función para cargar los usuarios
+// Cargar usuarios al iniciar
 const cargarUsuarios = async () => {
   try {
     const res = await fetch(`${apiUrl}/api/usuarios`)
-    const data = await res.json()
-    usuarios.value = data
-  } catch (error) {
-    console.error('Error al cargar usuarios:', error)
+    usuarios.value = await res.json()
+  } catch (err) {
+    console.error('Error cargando usuarios:', err)
   }
 }
 
-// Llamar a la función al iniciar la página
 onMounted(cargarUsuarios)
 
-// Función para agregar usuario
+// Agregar usuario
 const agregarUsuario = async () => {
   try {
     const res = await fetch(`${apiUrl}/api/usuarios`, {
@@ -54,98 +50,80 @@ const agregarUsuario = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nombre: nombre.value, email: email.value })
     })
-    const nuevoUsuario = await res.json()
-    usuarios.value.push(nuevoUsuario) // Agregar a la lista en frontend
-    nombre.value = '' // Limpiar campos
+    const nuevo = await res.json()
+    usuarios.value.push(nuevo)
+    nombre.value = ''
     email.value = ''
-  } catch (error) {
-    console.error('Error al agregar usuario:', error)
+  } catch (err) {
+    console.error('Error agregando usuario:', err)
   }
 }
 </script>
-<<<<<<< HEAD
 
-<style>
-/* Contenedor general centrado */
+<style scoped>
 .container {
-  max-width: 500px;
-  margin: 50px auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Roboto, sans-serif;
   text-align: center;
-  padding: 20px;
+  padding: 2rem;
   background: #f7f9fc;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  min-height: 100vh;
 }
 
-/* Título */
 h1 {
-  color: #333;
-  margin-bottom: 25px;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
 }
 
-/* Formulario */
 .formulario {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 30px;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.formulario input {
-  padding: 12px;
+input {
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-.formulario input:focus {
   outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 5px rgba(74,144,226,0.5);
 }
 
-.formulario button {
-  padding: 12px;
-  background-color: #4a90e2;
+input:focus {
+  border-color: #3498db;
+}
+
+button {
+  background: #3498db;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  padding: 0.6rem 1.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: 0.3s;
 }
 
-.formulario button:hover {
-  background-color: #357ab8;
+button:hover {
+  background: #2980b9;
 }
 
-/* Lista de usuarios */
-.usuarios-lista {
+.lista-usuarios {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
-.usuarios-lista li {
+.lista-usuarios li {
   display: flex;
   justify-content: space-between;
-  background-color: #fff;
-  padding: 12px 20px;
-  margin-bottom: 10px;
+  background: white;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.nombre {
-  font-weight: 600;
+  padding: 0.8rem 1rem;
+  margin: 0.5rem auto;
+  max-width: 400px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .email {
-  color: #666;
-  font-size: 14px;
+  color: #555;
+  font-size: 0.9rem;
 }
 </style>
-
-=======
->>>>>>> 11124be (Resuelto conflicto y agregado formulario de usuarios)
